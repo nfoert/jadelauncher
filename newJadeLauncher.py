@@ -69,7 +69,7 @@ else:
 
 Version_MAJOR = 2
 Version_MINOR = 2
-Version_PATCH = 0
+Version_PATCH = 1
 debug = False
 debugOpenAllWindows = False
 
@@ -482,6 +482,7 @@ class App:
                     killThreads = True
                     UTILITYFuncs.logAndPrint("INFO", f"App/launchApp: {self.name} was launched. (mac)")
                     sys.exit()
+
                     
                 else:
                     UTILITYFuncs.logAndPrint("FATAL", "App/launchApp: Your OS isn't supported! Please use Mac or Windows.")
