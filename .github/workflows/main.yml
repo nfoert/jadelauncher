@@ -1,0 +1,83 @@
+name: Create Binaries
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows-binary:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Package executable
+      uses: JackMcKew/pyinstaller-action-windows@python3-10-pyinstaller-5-3
+      with:
+        path: ./
+        spec: newJadeLauncherWINDOWS.spec
+
+    - name: Upload executable as an artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Jade Launcher.exe
+        path: dist
+        
+
+  build-linux-binary:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt5-qmake
+
+    - name: Create virtual enviroment and install modules
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Package executable
+      run: |
+        source venv/bin/activate
+        pyinstaller newJadeLauncherWINDOWS.spec
+        
+    - name: Upload executable as an artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Jade Launcher
+        path: dist
+
+        
+  
+        
+  remove-old-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    permissions:
+      actions: write
+
+    steps:
+    - name: Remove old artifacts
+      uses: c-hive/gha-remove-artifacts@v1
+      with:
+        age: '5 minutes' # '<number> <unit>', e.g. 5 days, 2 years, 90 seconds, parsed by Moment.js
+        
+
+        
+    
